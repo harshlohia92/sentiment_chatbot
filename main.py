@@ -1,16 +1,13 @@
 import streamlit as st
 from chatbot_helper import predict_with_keywords, generate_response, bert_model
 
-# ---------------- Page Configuration ----------------
 st.set_page_config(page_title="Motivational Chatbot 💬", page_icon="💬", layout="centered")
 
-# ---------------- Session State ----------------
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 if "theme" not in st.session_state:
     st.session_state.theme = "🌙 Dark"
 
-# ---------------- Theme Styles ----------------
 def apply_theme():
     if st.session_state.theme == "🌙 Dark":
         bg_color = "#141e30"
@@ -78,7 +75,6 @@ def apply_theme():
 
 apply_theme()
 
-# ---------------- Title ----------------
 st.markdown(
     "<h1 style='text-align:center; color:#FFD700;'>💬 Motivational Chatbot</h1>",
     unsafe_allow_html=True,
@@ -88,7 +84,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ---------------- User Input ----------------
 user_input = st.text_input("Type your message here:")
 
 col1, col2 = st.columns([1, 1])
@@ -97,7 +92,6 @@ with col1:
 with col2:
     clear_btn = st.button("🗑️ Clear Chat")
 
-# ---------------- Handle Send ----------------
 if send_btn and user_input.strip():
     sentiment = predict_with_keywords(bert_model, user_input)
     reply = generate_response(sentiment, user_input)
@@ -105,19 +99,16 @@ if send_btn and user_input.strip():
     st.session_state.chat_history.append(("user", user_input))
     st.session_state.chat_history.append(("bot", reply))
 
-# ---------------- Handle Clear ----------------
 if clear_btn:
     st.session_state.chat_history = []
     st.success("Chat history cleared ✅")
 
-# ---------------- Display Chat ----------------
 for sender, message in st.session_state.chat_history:
     if sender == "user":
         st.markdown(f"<div class='chat-bubble-user'>🙋‍♂️ You: {message}</div>", unsafe_allow_html=True)
     else:
         st.markdown(f"<div class='chat-bubble-bot'>🤖 Bot: {message}</div>", unsafe_allow_html=True)
 
-# ---------------- Sidebar ----------------
 st.sidebar.title("⚙️ Settings")
 theme_choice = st.sidebar.radio("Choose Theme", ["🌙 Dark", "☀️ Light"], index=0 if st.session_state.theme == "🌙 Dark" else 1)
 
